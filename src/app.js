@@ -1,0 +1,1 @@
+console.log(process.argv.splice(3), process.env);

@@ -1,0 +1,27 @@
+{
+  "name": "twittercatcher",
+  "version": "0.0.1",
+  "description": "commandline twitter users catcher (followers, posts, trends, ... you name it) ",
+  "main": "./src/app.js",
+  "scripts": {
+    "app": "API_KEY=ABCDEFGHIJKLMNOPQRSTUWXYZ NODE_ENV=development node ./src/app.js",
+    "download-tweets": "npm run app download-tweets",
+    "get-mentions": "npm run app get-mentions",
+    "download-followers": "npm run app download-followers",
+    "test": "jest --watchAll"
+  },
+  "keywords": [
+    "twitter"
+  ],
+  "author": "Oni",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^28.1.1",
+    "nodemon": "^2.0.16"
+  },
+  "dependencies": {
+    "config": "^3.3.7",
+    "mongoose": "^6.4.0",
+    "twitter-api-v2": "^1.12.2"
+  }
+}
