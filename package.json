@@ -4,7 +4,7 @@
   "description": "commandline twitter users catcher (followers, posts, trends, ... you name it) ",
   "main": "./src/app.js",
   "scripts": {
-    "app": "API_KEY=ABCDEFGHIJKLMNOPQRSTUWXYZ NODE_ENV=development node ./src/app.js",
+    "app": "node ./src/app.js",
     "download-tweets": "npm run app download-tweets",
     "get-mentions": "npm run app get-mentions",
     "download-followers": "npm run app download-followers",
