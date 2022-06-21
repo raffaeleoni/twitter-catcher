@@ -1,1 +1,1 @@
-console.log(process.argv.splice(3), process.env);
+console.log("args passed", process.argv.splice(2));
