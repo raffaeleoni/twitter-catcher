@@ -1,0 +1,15 @@
+{
+    "app" : {
+        "dbs": [
+            {
+                "type": "mongodb",
+                "priority": "default",
+                "target": "app",
+                "port": 27017,
+                "Schemas": [
+                    "not yet implemented"
+                ]
+            }
+        ]
+    }
+}

@@ -9,12 +9,12 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
   app:
     build: .
+    stdin_open: true 
+    tty: true        
     depends_on:
       - mongo
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+      MONGODB_URL_0: mongodb://root:example@mongo
       NODE_ENV: development
       API_KEY: ABCDEFGHIJKLMNOPQRSTUWXYZ
 volumes:
