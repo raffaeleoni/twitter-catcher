@@ -1,4 +1,4 @@
-const app = require('../src/app.js');
+const app = require('../../src/app.js');
 
 describe('CommandLine Arguments Tests', () => {
     it('download tweets validator', () => {});

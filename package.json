@@ -8,7 +8,7 @@
     "download-tweets": "npm run app download-tweets",
     "get-mentions": "npm run app get-mentions",
     "download-followers": "npm run app download-followers",
-    "test": "jest --watchAll ./tests"
+    "test": "jest --watchAll ./util/tests"
   },
   "keywords": [
     "twitter"
@@ -16,8 +16,7 @@
   "author": "Oni",
   "license": "MIT",
   "devDependencies": {
-    "jest": "^28.1.1",
-    "nodemon": "^2.0.16"
+    "jest": "^28.1.1"
   },
   "dependencies": {
     "config": "^3.3.7",

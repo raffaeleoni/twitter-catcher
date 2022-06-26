@@ -2,16 +2,23 @@ const mongoose = require('mongoose');
 const config = require('config');
 
 const user = new mongoose.Schema({ 
-    _id: mongoose.Schema.Types.ObjectId,
-    followers: Array,
+    followers: [
+        {
+            username: String,
+            id: String,
+            followers: Number
+        }
+    ],
+    id: String,
+    username: String,
     tweets: [
         {
-            _raw: Object,
-            mentions: Array
+            id: String,
+            text: String
         }
     ]
 
-}, { collection: "tracks" });
+}, { collection: "twitter" });
 
 
 async function connect() {
@@ -34,12 +41,25 @@ async function connect() {
 
     // if multiple connections needed then use a for instead of the two lines below, now is prioritized only the one marked as zero(env)/default(config)
     const defaultDB = process.env[Object.getOwnPropertyNames(process.env).filter(p => p.startsWith('MONGODB_URL')).sort()[0]] + ':'+ mongo_connections[0].port +'/';
-    await mongoose.connect(defaultDB, {'dbName': mongo_connections[0].target}).catch(error => handleError(error));
+    await mongoose.connect(defaultDB, {'dbName': mongo_connections[0].target}).catch(error => LOG(error));
 
 }
 
-mongoose.connection.on('open', () => { console.log("\n[EVENT] ./utils/db/mongo.js: open event fired\n"); });
-mongoose.connection.on('error', error => handleError(error));
+async function exists(targetUser) {
+    if(typeof(targetUser) === 'string') {
+        LOG("check if user has already been stored");
+        const res = await mongoose.connection.model('User',user).findOne({id: targetUser}).exec();
+        if(res !== null && res !== undefined) {
+            if(res.tweets !== undefined && res.tweets.length > 0) {
+                return res.tweets[0].id;
+            }
+        }
+    }
+    return null;
+}
 
-function handleError(error) { console.error("\n[EVENT] ./utils/db/mongo.js: error event fired\n",error); }
-module.exports = { mongoose, connect };
+mongoose.connection.on('open', () => { LOG("open event fired, connected to mongodb"); });
+mongoose.connection.on('error', error => LOG(error));
+
+function LOG(msg) { console.error("\n[LOG] ./utils/db/mongo.js: ",msg); }
+module.exports = { mongoose, connect, exists };
