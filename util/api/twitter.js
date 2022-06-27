@@ -2,30 +2,39 @@ const {TwitterApi} = require("twitter-api-v2");
 
 const twitter = 
     {
-        client: new TwitterApi(process.env.API_KEY).readOnly.v2,
+        clientV2: new TwitterApi(process.env.API_KEY).readOnly.v2,
+        clientV1: new TwitterApi(process.env.API_KEY).readOnly.v1,
         fetch: require("./twitter/fetch.twitter"),
         storage: require("./twitter/storage.twitter"),
-        log: (file,msg) => console.error("\n[LOG] "+file+": ",msg)
+        log: (file,msg) => console.error("[LOG] "+file+": ",msg)
     };
 
 module.exports = {
     async downloadTweets(target) {
         if(!typeof(target) === 'string' || (typeof(target) === 'string' && !target.startsWith('@'))) {
             twitter.log(__filename, 'target user whom you want to fetch timeline of must be specified as a String,\n written as "@USERNAME" with quotes\n');
-            return;
+            process.exit(1);
         }
-        const lastStoredTweet = await twitter.storage.exists(twitter.client, twitter.log, target);
-        if(lastStoredTweet !== undefined) {
-            twitter.log(__filename, 'user('+ target +') previously stored, appending latest tweets');
-            let user = await twitter.fetch.fetchExisting(twitter.client, twitter.log, target, lastStoredTweet).catch(error => twitter.log(__filename, error));
-            if(user === undefined || typeof(user) !== 'object') { twitter.log(__filename, "couldn't retreive tweets, execution halted"); process.exit(1); }
-            twitter.storage.append(twitter.log, user).catch(error => twitter.log(__filename, error));
-        } else {
-            twitter.log(__filename, 'user('+ target +')\'s timeline was not previously stored');
-            let user = await twitter.fetch.fetchNew(twitter.client, twitter.log, target).catch(error => twitter.log(__filename, error));
-            if(user === undefined || typeof(user) !== 'object') { twitter.log(__filename, "couldn't retreive tweets, execution halted"); process.exit(1); }
-            twitter.storage.add(twitter.log, user).catch(error => twitter.log(__filename, error));
+
+        twitter.log(__filename, 'fetching user('+ target +')\'s timeline');
+        let user = await twitter.fetch.fetchTweets(twitter.clientV2, twitter.log, target).catch(error => twitter.log(__filename, error));
+        if(user === undefined || typeof(user) !== 'object') { twitter.log(__filename, "couldn't retreive tweets, execution halted"); process.exit(1); }
+        twitter.storage.save(twitter.log, user).catch(error => twitter.log(__filename, error));
+        
+    },
+    async getMentions(target) {
+        if(!typeof(target) === 'string' || (typeof(target) === 'string' && !target.startsWith('@'))) {
+            twitter.log(__filename, 'target user whom you want to fetch timeline of must be specified as a String,\n written as "@USERNAME" with quotes\n');
+            process.exit(1);
         }
+    },
+    async downloadFollowers(target) {
+        if(!typeof(target) === 'string' || (typeof(target) === 'string' && !target.startsWith('@'))) {
+            twitter.log(__filename, 'target user whom you want to fetch timeline of must be specified as a String,\n written as "@USERNAME" with quotes\n');
+            process.exit(1);
+        }
+        let followers = await twitter.fetch.fetchFollowers(twitter.clientV2, twitter.log, target).catch(error => twitter.log(__filename, error));
+        if(followers === undefined || typeof(followers) !== 'object') { twitter.log(__filename, "couldn't retreive followers, execution halted"); process.exit(1); }
     }
 };
 

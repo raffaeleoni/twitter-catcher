@@ -6,6 +6,12 @@ const mongo = {
         new mongoose.Schema({ 
             id: String,
             username: String,
+            followers: [
+                {
+                    username: String,
+                    followers: Number
+                }
+            ],
             tweets: [
                 {
                     id: String,
@@ -14,7 +20,7 @@ const mongo = {
             ]
         
         }, { collection: "user" }),
-    log: (file,msg) => console.error("\n[LOG] "+file+": ",msg)
+    log: (file,msg) => console.error("[LOG] "+file+": ",msg)
 }
 
 mongoose.connection.on('error', () => { 
@@ -49,38 +55,21 @@ module.exports = {
         await mongoose.connect(defaultDB, {'dbName': mongo_connections[0].target}).catch(error => mongo.log(__filename, error));
     },
 
-    async exists(targetUser) {
-        if(typeof(targetUser) !== 'string') throw new Error("passed param type not matching required type of data");
-        mongo.log(__filename, "check if user has already been stored");
-        const res = await mongoose.connection.model('User',mongo.schema).findOne({username: targetUser}, error => mongo.log(__filename, error));
-        if(res !== null && res !== undefined) {
-            if(res.tweets !== undefined && res.tweets.length > 0) {
-                return res.tweets[0].id;
-            }
-        }
-        throw new Error("no match found for targeted user");
-    },
-
-    async append(toBeStored) {
+    async save(toBeStored) {
         if(typeof(toBeStored) !== 'object') throw new Error("passed params type not matching required types of data");
         const User = await mongoose.connection.model('User',mongo.schema);
-        const res = await mongoose.connection.model('User',mongo.schema).findOne({username: toBeStored.id}, error => mongo.log(__filename, error));
-        mongo.log(__filename, res);
+        const res = await User.findOne({id: toBeStored.id}).catch(error => mongo.log(__filename, error));
         if(res !== null && res !== undefined) {
-            let updatedTweets = toBeStored.tweets.concat(res.tweets);
-            mongo.log(__filename, updatedTweets);
-            const output = await User.replaceOne({username: toBeStored.id}, {id: toBeStored.id, username: toBeStored.username, tweets: updatedTweets}, error => mongo.log(__filename, error));
-            mongo.log(__filename, "UPDATE STORED"); 
-            mongo.log(__filename, output); 
+            mongo.log(__filename, "user("+ res.username +") already stored, updating");
+            const output = await User.replaceOne({id: toBeStored.id}, toBeStored);
+            mongo.log(__filename, "USER UPDATED"); 
+            mongo.log(__filename, "acknowledged: " + output.acknowledged); 
+        } else {
+            mongo.log(__filename, "user("+ res.username +") not previously stored, creating");
+            const output = await User.create(toBeStored);
+            mongo.log(__filename, "USER CREATED"); 
+            mongo.log(__filename, "stored with id: " + output._id);
         }
-    },
-
-    async add(toBeStored) {
-        if(typeof(toBeStored) !== 'object') throw new Error("passed params type not matching required types of data");
-        const User = await mongoose.connection.model('User',mongo.schema);
-        const output = await User.create(toBeStored).catch(error => mongo.log(error));
-        mongo.log(__filename, "USER STORED"); 
-        mongo.log(__filename, output);
     }
 
 };

@@ -4,4 +4,4 @@ COPY . .
 RUN npm install
 
 CMD npm run test
-CMD npm run download-tweets '@Target'
+CMD npm run download-followers "@raffaeleoni"
