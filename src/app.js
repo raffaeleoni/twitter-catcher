@@ -1,4 +1,4 @@
-const mongo = require("../util/db/mongo");
+const mongo = require("../util/db/adapters/mongo");
 const twitter = require("../util/api/twitter");
 
 mongo.connect().then(() => {
@@ -9,7 +9,9 @@ mongo.connect().then(() => {
             twitter.getMentions(params[1]);
         } else if(params.length === 2 && params[0] === 'download-followers' && params[1].startsWith('@')){
             twitter.downloadFollowers(params[1]);
-        } else {
+        } else if(params.length === 2 && params[0] === 'get-followers' && params[1].startsWith('@')){
+            twitter.getFollowers(params[1]);
+        }else {
             console.log(
 `TWITTER-CATCHER(v0.0.1) please use one of the followings commands:
     - npm run download-tweets "@TargetUser"

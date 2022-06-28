@@ -8,6 +8,7 @@
     "download-tweets": "npm run app download-tweets",
     "get-mentions": "npm run app get-mentions",
     "download-followers": "npm run app download-followers",
+    "get-followers": "npm run app get-followers",
     "test": "jest --watchAll ./util/tests"
   },
   "keywords": [
