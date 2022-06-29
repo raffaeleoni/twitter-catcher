@@ -17,7 +17,7 @@ mongo.connect().then(() => {
     - npm run download-tweets "@TargetUser"
     - npm run get-mentions "@TargetUser"
     - npm run download-followers "@TargetUser"
-quotes are mandatory
+quotes and "@" are mandatory
 `
             );
         }

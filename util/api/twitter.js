@@ -13,11 +13,6 @@ const twitter =
 
 module.exports = {
     async downloadTweets(target) {
-        if(!typeof(target) === 'string' || (typeof(target) === 'string' && !target.startsWith('@'))) {
-            twitter.log(__filename, 'target user whom you want to fetch timeline of must be specified as a String,\n written as "@USERNAME" with quotes\n');
-            process.exit(1);
-        }
-
         twitter.log(__filename, 'fetching user('+ target +')\'s timeline');
         let tweets = await twitter.fetch.fetchTweets(twitter.clientV2, twitter.log, target).catch(error => twitter.log(__filename, error));
         twitter.log(__filename, tweets);
@@ -27,10 +22,6 @@ module.exports = {
     },
 
     async getMentions(target) {
-        if(!typeof(target) === 'string' || (typeof(target) === 'string' && !target.startsWith('@'))) {
-            twitter.log(__filename, 'target user whom you want to fetch mentions of must be specified as a String,\n written as "@USERNAME" with quotes\n');
-            process.exit(1);
-        }
         twitter.log(__filename, 'fetching user('+ target +')\'s mentioned accounts from stored tweets');
         let storedMentions = await twitter.storage.getMentions(twitter.log, target).catch(error => twitter.log(__filename, error));
         if(storedMentions === undefined || typeof(storedMentions) !== 'object') { twitter.log(__filename, "couldn't retreive stored mentions, execution halted"); process.exit(1); }
@@ -39,10 +30,6 @@ module.exports = {
     },
 
     async downloadFollowers(target) {
-        if(!typeof(target) === 'string' || (typeof(target) === 'string' && !target.startsWith('@'))) {
-            twitter.log(__filename, 'target user whom you want to fetch followers of must be specified as a String,\n written as "@USERNAME" with quotes\n');
-            process.exit(1);
-        }
         twitter.log(__filename, 'fetching user('+ target +')\'s followers and printing out the most followed ones');
         let followers = await twitter.fetch.fetchFollowers(twitter.clientV2, twitter.log, target).catch(error => twitter.log(__filename, error));
         if(followers === undefined || typeof(followers) !== 'object') { twitter.log(__filename, "couldn't fetch updated followers, execution halted"); process.exit(1); }
@@ -53,10 +40,6 @@ module.exports = {
     },
 
     async getFollowers(target) {
-        if(!typeof(target) === 'string' || (typeof(target) === 'string' && !target.startsWith('@'))) {
-            twitter.log(__filename, 'target user whom you want to fetch followers of must be specified as a String,\n written as "@USERNAME" with quotes\n');
-            process.exit(1);
-        }
         twitter.log(__filename, 'fetching user('+ target +')\'s followed accounts from stored ones');
         let followers = await twitter.storage.getFollowers(twitter.log, target).catch(error => twitter.log(__filename, error));
         if(followers === undefined || typeof(followers) !== 'object') { twitter.log(__filename, "couldn't retreive stored followers, execution halted"); process.exit(1); }
@@ -64,12 +47,3 @@ module.exports = {
         process.exit(0); 
     }
 };
-
-
-
-
-/** 
- * TODO: 
- *  -   implement stored.exists by id, and if yes update username (could've been changed) 
- * 
- */

@@ -79,8 +79,6 @@ module.exports = {
             }
         });
     
-        mongo.log(__filename, mongo_connections);
-    
         const defaultDB = process.env[Object.getOwnPropertyNames(process.env).filter(p => p.startsWith('MONGODB_URL')).sort()[0]] + ':'+ mongo_connections[0].port +'/';
         await mongoose.connect(defaultDB, {'dbName': mongo_connections[0].target}).catch(error => mongo.log(__filename, error));
     },
@@ -90,12 +88,12 @@ module.exports = {
         const Twitter = await mongoose.connection.model('Twitter',mongo.schema);
         const res = await Twitter.findOne({id: toBeStored.id}).catch(error => mongo.log(__filename, error));
         if(res !== undefined && res !== null) {
-            mongo.log(__filename, "user("+ res.username +") already stored, updating");
+            mongo.log(__filename, "user(@"+ res.username +") already stored, updating");
             const output = await Twitter.updateOne({id: toBeStored.id}, {verified: toBeStored.verified, lastUpdated: toBeStored.lastUpdated, tweets: toBeStored.tweets}).catch(error => mongo.log(__filename, error));
             mongo.log(__filename, "user tweets updated"); 
             mongo.log(__filename, "acknowledged: " + output.acknowledged); 
         } else {
-            mongo.log(__filename, "user("+ toBeStored.username +") not previously stored, creating");
+            mongo.log(__filename, "user(@"+ toBeStored.username +") not previously stored, creating");
             const output = await Twitter.create(toBeStored).catch(error => mongo.log(__filename, error));
             mongo.log(__filename, "user created"); 
             mongo.log(__filename, "stored with id: " + output._id);
@@ -107,12 +105,12 @@ module.exports = {
         const Twitter = await mongoose.connection.model('Twitter',mongo.schema);
         const res = await Twitter.findOne({id: toBeStored.id}).catch(error => mongo.log(__filename, error));
         if(res !== undefined && res !== null) {
-            mongo.log(__filename, "user("+ res.username +") already stored, updating");
+            mongo.log(__filename, "user(@"+ res.username +") already stored, updating");
             const output = await Twitter.updateOne({id: toBeStored.id}, {verified: toBeStored.verified, followers: toBeStored.followers}).catch(error => mongo.log(__filename, error));
             mongo.log(__filename, "user followers updated"); 
             mongo.log(__filename, "acknowledged: " + output.acknowledged); 
         } else {
-            mongo.log(__filename, "user("+ res.username +") not previously stored, creating");
+            mongo.log(__filename, "user(@"+ res.username +") not previously stored, creating");
             const output = await Twitter.create(toBeStored).catch(error => mongo.log(__filename, error));
             mongo.log(__filename, "user created"); 
             mongo.log(__filename, "stored with id: " + output._id);

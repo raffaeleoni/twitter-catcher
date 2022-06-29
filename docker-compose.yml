@@ -16,6 +16,6 @@ services:
     environment:
       MONGODB_URL_0: mongodb://root:example@mongo
       NODE_ENV: development
-      API_KEY: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      API_KEY: YOUR_API_KEY_HERE
 volumes:
   mongo: {}
