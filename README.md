@@ -7,27 +7,27 @@ Edit the docker-compose.yml and replace the API_KEY value with your personally o
     docker compose up
 ``` 
 and you should see the 4 simple tests passing.
-other functions are available by editing the Dockerfile changing the RUN line with one of the following commands:
+Other functions are available by editing the Dockerfile changing the RUN line with one of the following commands:
     
 ```    
     npm run download-tweets "@TargetUser"
 ``` 
-updates downloaded tweets from Twitter API if already stored and fetch eventually new ones, or download them anew
+IT DOES: updates downloaded tweets from Twitter API if already stored and fetch eventually new ones, or download them anew if the account was not stored at all
 
 ```
     npm run get-mentions "@TargetUser"
 ``` 
-print out TargetUser mentioned accounts in its tweets from stored tweets
+IT DOES: print out TargetUser mentioned accounts in its tweets from stored tweets
 
 ```    
     npm run download-followers "@TargetUser"
 ``` 
-updates followers from Twitter API if already stored and fetch eventually new ones, or download them anew
+IT DOES: updates followers from Twitter API if already stored and fetch eventually new ones, or download them anew if the account was not stored at all
 
 ```    
     npm run get-followers "@TargetUser"
 ``` 
-print out TargetUser followers from stored account
+IT DOES: print out TargetUser followers from stored account
 
 Replace "@TargetUser" with your username of choice, quotes and "@" are mandatory.
 ASlso be sure to rebuild the the image, it should looks like this "twitter-catcher_app:latest"
